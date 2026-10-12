@@ -1,0 +1,12 @@
+{
+  "name": "kaizen-demandas",
+  "version": "1.0.0",
+  "description": "Backend simples para sincronizar demandas do KAIZEN de forma compartilhada",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
