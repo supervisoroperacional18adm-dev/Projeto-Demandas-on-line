@@ -1,131 +1,340 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KAIZEN - Gestão de Atividades</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        
-        .container {
-            text-align: center;
-            z-index: 10;
-            animation: fadeIn 0.6s ease-in-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .logo-box {
-            background: rgba(255, 255, 255, 0.95);
-            width: 100px;
-            height: 100px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            font-size: 48px;
-            animation: slideDown 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        
-        @keyframes slideDown {
-            from { transform: translateY(-30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        
-        h1 {
-            color: #fff;
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            letter-spacing: -0.5px;
-        }
-        
-        p {
-            color: rgba(255, 255, 255, 0.85);
-            font-size: 16px;
-            margin-bottom: 30px;
-            font-weight: 400;
-        }
-        
-        .spinner {
-            width: 50px;
-            height: 50px;
-            margin: 0 auto;
-            border: 4px solid rgba(255, 255, 255, 0.2);
-            border-top: 4px solid #fff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .dots {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 18px;
-            margin-top: 15px;
-            letter-spacing: 3px;
-            animation: blink 1.4s infinite;
-        }
-        
-        @keyframes blink {
-            0%, 20%, 50%, 80%, 100% { opacity: 1; }
-            40% { opacity: 0.4; }
-            60% { opacity: 0.7; }
-        }
-        
-        .footer {
-            position: absolute;
-            bottom: 20px;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 12px;
-        }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kaizen - Gestão de Demandas</title>
+<style>
+:root{--azul:#1f3f8f;--azul2:#2c5bd0;--verm:#d6262c;--bg:#f2f5fa;--card:#fff;--txt:#1b2333;--mut:#667085;--bord:#dbe2ef;--ok:#17803d;--warn:#b7791f}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--txt)}
+header{background:#fff;border-bottom:4px solid var(--verm);padding:10px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px}
+.logo img{height:46px}
+.wm{display:flex;flex-direction:column;line-height:1}
+.wm small{font-size:11px;font-weight:700;color:var(--azul);letter-spacing:2px}
+.wm b{font-size:30px;color:var(--azul);letter-spacing:1px}
+.wm b i{font-style:normal;color:var(--verm)}
+header h1{font-size:16px;margin:0;color:var(--mut);font-weight:600;flex:1}
+#clock{font-variant-numeric:tabular-nums;color:var(--mut);font-size:14px}
+#sync{font-size:12px;padding:4px 10px;border-radius:99px;background:#eef2fb;color:var(--azul)}
+#sync.off{background:#fdecec;color:var(--verm)}
+nav{display:flex;gap:6px;padding:12px 20px 0;flex-wrap:wrap}
+nav button{border:1px solid var(--bord);background:#fff;padding:10px 16px;border-radius:10px 10px 0 0;font-weight:600;color:var(--mut);cursor:pointer;font-size:14px}
+nav button.on{background:var(--azul);color:#fff;border-color:var(--azul)}
+nav .badge{background:var(--verm);color:#fff;border-radius:99px;padding:1px 8px;font-size:12px;margin-left:6px}
+main{padding:0 20px 40px}
+.panel{background:var(--card);border:1px solid var(--bord);border-radius:0 12px 12px 12px;padding:20px;display:none}
+.panel.on{display:block}
+h2{margin:0 0 4px;color:var(--azul);font-size:20px}
+p.sub{margin:0 0 16px;color:var(--mut);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:4px}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--bord);border-radius:8px;font:inherit;background:#fff}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--azul2);border-color:transparent}
+textarea{min-height:70px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips label{margin:0;font-weight:500;border:1px solid var(--bord);padding:5px 10px;border-radius:99px;cursor:pointer;font-size:13px;user-select:none}
+.chips input{display:none}
+.chips label:has(input:checked){background:var(--azul);color:#fff;border-color:var(--azul)}
+.btn{border:0;border-radius:8px;padding:11px 20px;font-weight:700;cursor:pointer;font-size:14px;color:#fff;background:var(--azul)}
+.btn:hover{background:var(--azul2)}
+.btn.red{background:var(--verm)}
+.btn.ghost{background:#fff;color:var(--azul);border:1px solid var(--azul)}
+.btn.sm{padding:7px 12px;font-size:13px}
+.full{grid-column:1/-1}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+.dem{border:1px solid var(--bord);border-left:5px solid var(--warn);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:6px;background:#fff}
+.dem.fech{border-left-color:var(--ok)}
+.dem h3{margin:0;font-size:16px;color:var(--azul)}
+.dem .meta{font-size:13px;color:var(--mut);line-height:1.5}
+.dem .meta b{color:var(--txt)}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:#fff4dc;color:var(--warn)}
+.tag.ok{background:#e1f5e8;color:var(--ok)}
+.tag.nc{background:#fdecec;color:var(--verm)}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:end}
+.tools>div{min-width:160px}
+.stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.stat{flex:1;min-width:130px;background:#eef2fb;border-radius:10px;padding:10px 14px}
+.stat b{display:block;font-size:24px;color:var(--azul)}
+.stat span{font-size:12px;color:var(--mut)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:var(--azul);color:#fff;text-align:left;padding:8px;white-space:nowrap}
+td{padding:8px;border-bottom:1px solid var(--bord);vertical-align:top}
+.scroll{overflow:auto;max-height:560px}
+dialog{border:0;border-radius:14px;padding:22px;max-width:480px;width:92%;box-shadow:0 20px 60px #0004}
+dialog::backdrop{background:#0006}
+dialog h3{margin:0 0 4px;color:var(--azul)}
+.err{color:var(--verm);font-size:13px;min-height:18px;margin-top:6px}
+.empty{color:var(--mut);padding:30px;text-align:center}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--azul);color:#fff;padding:10px 18px;border-radius:99px;display:none;font-size:14px}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo-box">📋</div>
-        <h1>KAIZEN</h1>
-        <p>Gestão de Atividades & Performance</p>
-        <div class="spinner"></div>
-        <div class="dots">●●●</div>
+
+<header>
+  <div class="logo">
+    <img src="logo-kaizen.png" alt="" onerror="this.remove()">
+    <div class="wm"><small>GRUPO</small><b>KA<i>I</i>ZEN</b></div>
+  </div>
+  <h1>Gestão de Demandas — Operações, Checklist e Controle</h1>
+  <span id="sync">Sincronizando…</span>
+  <span id="clock">--/--/---- --:--</span>
+</header>
+
+<nav id="tabs">
+  <button data-t="abrir" class="on">1. Abrir Demanda</button>
+  <button data-t="andamento">2. Em Andamento <span class="badge" id="bAnd">0</span></button>
+  <button data-t="concluidas">3. Concluídas <span class="badge" id="bCon" style="background:var(--ok)">0</span></button>
+</nav>
+
+<main>
+<!-- ABRIR -->
+<section class="panel on" id="p-abrir">
+  <h2>Registrar Nova Demanda</h2>
+  <p class="sub">Qualquer colaborador pode abrir. Ela ficará visível imediatamente para todos e qualquer pessoa autorizada poderá encerrá-la.</p>
+  <form id="fAbrir" class="grid">
+    <div><label>Equipe / Turno *</label><select id="equipe" required></select></div>
+    <div><label>Categoria *</label><select id="categoria" required></select></div>
+    <div><label>Atividade *</label><select id="atividade" required></select></div>
+    <div><label>Colaborador Executor *</label><select id="executor" required></select></div>
+    <div><label>Quem está abrindo (identificação) *</label><input id="abertoPor" placeholder="Seu nome" required></div>
+    <div><label>Local / Unidade *</label><select id="local" required></select></div>
+    <div class="full"><label>Andares / Pavimentos impactados</label><div class="chips" id="andares"></div></div>
+    <div class="full"><label>Observações de abertura</label><textarea id="obsAbertura"></textarea></div>
+    <div class="full"><button class="btn" type="submit">Abrir Demanda</button></div>
+  </form>
+</section>
+
+<!-- ANDAMENTO -->
+<section class="panel" id="p-andamento">
+  <h2>Demandas em Andamento</h2>
+  <p class="sub">Abertas por qualquer pessoa. Use “Encerrar” informando seu nome e a senha.</p>
+  <div class="tools">
+    <div><label>Buscar</label><input id="busca" placeholder="Atividade, executor, local…"></div>
+    <div><label>Equipe</label><select id="fEquipe"></select></div>
+  </div>
+  <div class="cards" id="listaAnd"></div>
+</section>
+
+<!-- CONCLUIDAS -->
+<section class="panel" id="p-concluidas">
+  <h2>Demandas Concluídas</h2>
+  <p class="sub">Histórico completo, com quem abriu e quem encerrou.</p>
+  <div class="stats">
+    <div class="stat"><b id="sTot">0</b><span>Total de demandas</span></div>
+    <div class="stat"><b id="sAnd">0</b><span>Em andamento</span></div>
+    <div class="stat"><b id="sCon">0</b><span>Concluídas</span></div>
+    <div class="stat"><b id="sTmp">--</b><span>Tempo médio (min)</span></div>
+  </div>
+  <div class="tools">
+    <div><label>De</label><input type="date" id="hDe"></div>
+    <div><label>Até</label><input type="date" id="hAte"></div>
+    <div><label>Status</label><select id="hSt"><option value="">Todas</option><option value="aberta">Em andamento</option><option value="fechada">Concluídas</option></select></div>
+    <button class="btn ghost" id="btnCsv" type="button">Exportar CSV (Excel/Sheets)</button>
+  </div>
+  <div class="scroll"><table>
+    <thead><tr><th>Status</th><th>Equipe</th><th>Categoria</th><th>Atividade</th><th>Executor</th><th>Aberta por</th><th>Local</th><th>Andares</th><th>Abertura</th><th>Encerrada por</th><th>Conclusão</th><th>Conformidade</th></tr></thead>
+    <tbody id="hist"></tbody>
+  </table></div>
+</section>
+</main>
+
+<!-- MODAL ENCERRAR -->
+<dialog id="dlg">
+  <form id="fFechar" method="dialog" style="display:flex;flex-direction:column;gap:12px">
+    <div><h3>Encerrar Demanda</h3><div class="meta" id="dlgInfo" style="font-size:13px;color:var(--mut)"></div></div>
+    <div><label>Identificação de quem encerra *</label><input id="fechadoPor" placeholder="Seu nome" required></div>
+    <div><label>Senha *</label><input id="senha" type="password" autocomplete="off" required></div>
+    <div><label>Conformidade / Qualidade *</label>
+      <select id="conf" required>
+        <option value="Conforme 100%">Conforme 100% (Excelente)</option>
+        <option value="Conforme Parcial">Conforme Parcial (Com observações)</option>
+        <option value="Não Conforme">Não Conforme (Incompleto ou Refazer)</option>
+      </select></div>
+    <div><label>Observações do fechamento</label><textarea id="obsFech"></textarea></div>
+    <div class="err" id="dlgErr"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end">
+      <button class="btn ghost" type="button" id="dlgCancel">Cancelar</button>
+      <button class="btn red" type="submit">Confirmar Encerramento</button>
     </div>
-    
-    <div class="footer">
-        Carregando aplicativo...
-    </div>
-    
-    <script>
-        // Redireciona para o documento após 1.5 segundos
-        setTimeout(() => {
-            window.location.href = 'Documento de Santoro.html';
-        }, 1500);
-        
-        // Fallback: redireciona se algo der errado
-        window.addEventListener('error', () => {
-            window.location.href = 'Documento de Santoro.html';
-        });
-    </script>
+  </form>
+</dialog>
+<div id="toast"></div>
+
+<script>
+/* ============ CONFIGURAÇÃO ============ */
+// 1) URL do Firebase Realtime Database (ex.: "https://SEU-PROJETO-default-rtdb.firebaseio.com").
+//    Deixe vazio para testar localmente (dados só neste navegador, sem compartilhar).
+const FIREBASE_URL = "";
+// 2) Senha para encerrar demandas.
+const SENHA_FECHAR = "@Kz123";
+// 3) Listas editáveis.
+const EQUIPES = ["Equipe Diurna","Equipe Noturna"];
+const CATEGORIAS = {
+  "Atividade de Rotina":["Limpeza de áreas comuns","Limpeza de banheiros","Coleta de resíduos","Reposição de materiais"],
+  "Atividade Periódica":["Limpeza de vidros","Limpeza de garagens","Enceramento de piso","Limpeza de fachada"]
+};
+const COLABORADORES = ["Colaborador 1","Colaborador 2","Colaborador 3","TODOS"];
+const LOCAIS = ["ANP","TRP","CEVI(EGTO)","ADMINISTRAÇÃO"];
+const ANDARES = ["G1","G2","G3","G4","G5","G6","Térreo","Mezanino",
+  ...Array.from({length:15},(_,i)=>(i+1)+"º Andar"),"18º Andar","Cobertura","Calçada / Fachada","Praça","Refeitório","Administração"];
+const POLL_MS = 5000;
+
+/* ============ UTIL ============ */
+const $ = s => document.querySelector(s);
+const fmt = iso => iso ? new Date(iso).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}) : "--";
+const esc = s => String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const toast = m => { const t=$("#toast"); t.textContent=m; t.style.display="block"; setTimeout(()=>t.style.display="none",2600); };
+const opts = (el,arr,ph)=>{ el.innerHTML=(ph?`<option value="">${ph}</option>`:"")+arr.map(a=>`<option>${esc(a)}</option>`).join(""); };
+
+/* ============ ARMAZENAMENTO (compartilhado) ============ */
+const Store = {
+  shared: !!FIREBASE_URL,
+  async all(){
+    if(this.shared){
+      const r = await fetch(`${FIREBASE_URL.replace(/\/$/,"")}/demandas.json`);
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      const d = await r.json() || {};
+      return Object.values(d);
+    }
+    return JSON.parse(localStorage.getItem("kz_demandas")||"[]");
+  },
+  async save(dem){
+    if(this.shared){
+      const r = await fetch(`${FIREBASE_URL.replace(/\/$/,"")}/demandas/${dem.id}.json`,{method:"PUT",body:JSON.stringify(dem)});
+      if(!r.ok) throw new Error("HTTP "+r.status);
+      return;
+    }
+    const l = JSON.parse(localStorage.getItem("kz_demandas")||"[]");
+    const i = l.findIndex(x=>x.id===dem.id);
+    i>=0 ? l[i]=dem : l.push(dem);
+    localStorage.setItem("kz_demandas",JSON.stringify(l));
+  },
+  // Fecha só se ainda estiver aberta (evita dois usuários fecharem a mesma demanda)
+  async close(id,patch){
+    const l = await this.all();
+    const d = l.find(x=>x.id===id);
+    if(!d) throw new Error("Demanda não encontrada.");
+    if(d.status==="fechada") throw new Error("Esta demanda já foi encerrada por "+d.fechadoPor+".");
+    Object.assign(d,patch,{status:"fechada"});
+    await this.save(d);
+    return d;
+  }
+};
+
+let DEMANDAS = [];
+async function refresh(){
+  try{
+    DEMANDAS = (await Store.all()).sort((a,b)=>b.abertura.localeCompare(a.abertura));
+    const s=$("#sync"); s.className=""; s.textContent = Store.shared ? "● Online — compartilhado" : "Modo local (sem compartilhamento)";
+    if(!Store.shared) s.classList.add("off");
+    render();
+  }catch(e){ const s=$("#sync"); s.className="off"; s.textContent="Sem conexão — tentando…"; }
+}
+
+/* ============ RENDER ============ */
+function render(){
+  const and = DEMANDAS.filter(d=>d.status==="aberta");
+  const con = DEMANDAS.filter(d=>d.status==="fechada");
+  $("#bAnd").textContent=and.length; $("#bCon").textContent=con.length;
+  $("#sTot").textContent=DEMANDAS.length; $("#sAnd").textContent=and.length; $("#sCon").textContent=con.length;
+  const t = con.map(d=>(new Date(d.fechamento)-new Date(d.abertura))/60000).filter(n=>n>=0);
+  $("#sTmp").textContent = t.length ? Math.round(t.reduce((a,b)=>a+b,0)/t.length) : "--";
+
+  // Em andamento
+  const q = $("#busca").value.toLowerCase(), fe=$("#fEquipe").value;
+  const lista = and.filter(d=>(!fe||d.equipe===fe) && (!q||JSON.stringify(d).toLowerCase().includes(q)));
+  $("#listaAnd").innerHTML = lista.length ? lista.map(d=>`
+    <div class="dem">
+      <span class="tag">EM ANDAMENTO</span>
+      <h3>${esc(d.atividade)}</h3>
+      <div class="meta">
+        <b>${esc(d.categoria)}</b> · ${esc(d.equipe)}<br>
+        Executor: <b>${esc(d.executor)}</b><br>
+        Aberta por: <b>${esc(d.abertoPor)}</b> em ${fmt(d.abertura)}<br>
+        Local: ${esc(d.local)}${d.andares?.length?" — "+esc(d.andares.join(", ")):""}
+        ${d.obsAbertura?`<br>Obs.: ${esc(d.obsAbertura)}`:""}
+      </div>
+      <div><button class="btn red sm" data-close="${d.id}">Encerrar</button></div>
+    </div>`).join("") : `<div class="empty">Nenhuma demanda em andamento.</div>`;
+
+  // Histórico
+  const de=$("#hDe").value, ate=$("#hAte").value, st=$("#hSt").value;
+  const h = DEMANDAS.filter(d=>(!st||d.status===st)&&(!de||d.abertura.slice(0,10)>=de)&&(!ate||d.abertura.slice(0,10)<=ate));
+  $("#hist").innerHTML = h.length ? h.map(d=>`<tr>
+    <td><span class="tag ${d.status==="fechada"?"ok":""}">${d.status==="fechada"?"CONCLUÍDA":"EM ANDAMENTO"}</span></td>
+    <td>${esc(d.equipe)}</td><td>${esc(d.categoria)}</td><td>${esc(d.atividade)}</td><td>${esc(d.executor)}</td>
+    <td>${esc(d.abertoPor)}</td><td>${esc(d.local)}</td><td>${esc((d.andares||[]).join(", "))}</td>
+    <td>${fmt(d.abertura)}</td><td>${esc(d.fechadoPor||"--")}</td><td>${fmt(d.fechamento)}</td>
+    <td>${d.conformidade?`<span class="tag ${d.conformidade==="Não Conforme"?"nc":"ok"}">${esc(d.conformidade)}</span>`:"--"}</td>
+  </tr>`).join("") : `<tr><td colspan="12" class="empty">Nada encontrado.</td></tr>`;
+}
+
+/* ============ INIT FORM ============ */
+opts($("#equipe"),EQUIPES,"Selecione…");
+opts($("#categoria"),Object.keys(CATEGORIAS),"Selecione…");
+opts($("#executor"),COLABORADORES,"Selecione…");
+opts($("#local"),LOCAIS,"Selecione…");
+opts($("#fEquipe"),["",...EQUIPES].map(x=>x),"");
+$("#fEquipe").options[0].text="Todas";
+$("#atividade").innerHTML=`<option value="">Selecione a categoria…</option>`;
+$("#categoria").onchange=e=>opts($("#atividade"),CATEGORIAS[e.target.value]||[],"Selecione…");
+$("#andares").innerHTML = ANDARES.map(a=>`<label><input type="checkbox" value="${esc(a)}">${esc(a)}</label>`).join("");
+
+// abas
+document.querySelectorAll("#tabs button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("#tabs button").forEach(x=>x.classList.toggle("on",x===b));
+  document.querySelectorAll(".panel").forEach(p=>p.classList.toggle("on",p.id==="p-"+b.dataset.t));
+});
+["#busca","#fEquipe","#hDe","#hAte","#hSt"].forEach(s=>$(s).addEventListener("input",render));
+
+// abrir
+$("#fAbrir").onsubmit=async e=>{
+  e.preventDefault();
+  const dem = {
+    id: Date.now().toString(36)+Math.random().toString(36).slice(2,6),
+    status:"aberta", equipe:$("#equipe").value, categoria:$("#categoria").value, atividade:$("#atividade").value,
+    executor:$("#executor").value, abertoPor:$("#abertoPor").value.trim(), local:$("#local").value,
+    andares:[...document.querySelectorAll("#andares input:checked")].map(i=>i.value),
+    obsAbertura:$("#obsAbertura").value.trim(), abertura:new Date().toISOString()
+  };
+  try{ await Store.save(dem); toast("Demanda aberta!"); e.target.reset(); $("#atividade").innerHTML=`<option value="">Selecione a categoria…</option>`;
+       await refresh(); document.querySelector('[data-t="andamento"]').click(); }
+  catch(err){ toast("Erro ao salvar: "+err.message); }
+};
+
+// encerrar
+let fechandoId=null;
+$("#listaAnd").onclick=e=>{
+  const id=e.target.dataset.close; if(!id) return;
+  const d=DEMANDAS.find(x=>x.id===id); fechandoId=id;
+  $("#dlgInfo").innerHTML=`<b>${esc(d.atividade)}</b><br>Aberta por ${esc(d.abertoPor)} em ${fmt(d.abertura)}`;
+  $("#fFechar").reset(); $("#dlgErr").textContent=""; $("#dlg").showModal();
+};
+$("#dlgCancel").onclick=()=>$("#dlg").close();
+$("#fFechar").onsubmit=async e=>{
+  e.preventDefault();
+  if($("#senha").value!==SENHA_FECHAR){ $("#dlgErr").textContent="Senha incorreta."; return; }
+  try{
+    await Store.close(fechandoId,{fechadoPor:$("#fechadoPor").value.trim(),conformidade:$("#conf").value,obsFechamento:$("#obsFech").value.trim(),fechamento:new Date().toISOString()});
+    $("#dlg").close(); toast("Demanda encerrada."); refresh();
+  }catch(err){ $("#dlgErr").textContent=err.message; refresh(); }
+};
+
+// CSV
+$("#btnCsv").onclick=()=>{
+  const cols=["status","equipe","categoria","atividade","executor","abertoPor","local","andares","abertura","fechadoPor","fechamento","conformidade","obsAbertura","obsFechamento"];
+  const rows=DEMANDAS.map(d=>cols.map(c=>`"${String(Array.isArray(d[c])?d[c].join("; "):d[c]??"").replace(/"/g,'""')}"`).join(";"));
+  const blob=new Blob(["\ufeff"+cols.join(";")+"\n"+rows.join("\n")],{type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="demandas-kaizen.csv"; a.click();
+};
+
+// relógio e sincronização
+setInterval(()=>$("#clock").textContent=new Date().toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}),1000);
+$("#clock").textContent=new Date().toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"});
+refresh(); setInterval(()=>{ if(!$("#dlg").open) refresh(); },POLL_MS);
+addEventListener("storage",refresh);
+</script>
 </body>
 </html>
